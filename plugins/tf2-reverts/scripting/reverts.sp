@@ -1402,6 +1402,17 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] class, int index, Hand
 	}
 	
 	if (
+		ItemIsEnabled("sandman", client) &&
+		StrEqual(class, "tf_weapon_bat_wood") &&
+		(index == 44)
+	) {
+		item1 = TF2Items_CreateItem(0);
+		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
+		TF2Items_SetNumAttributes(item1, 1);
+		TF2Items_SetAttribute(item1, 0, 278, 1.33); // effect bar recharge rate increased
+	}
+	
+	if (
 		ItemIsEnabled("glovesru", client) &&
 		StrEqual(class, "tf_weapon_fists") &&
 		(index == 239 || index == 1084 || index == 1100)
@@ -1460,7 +1471,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] class, int index, Hand
 		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
 		TF2Items_SetNumAttributes(item1, 5);
 		TF2Items_SetAttribute(item1, 0, 35, 1.8); // mult cloak meter regen rate
-		TF2Items_SetAttribute(item1, 1, 82, 2.5); // cloak consume rate increased
+		TF2Items_SetAttribute(item1, 1, 82, 1.6); // cloak consume rate increased
 		TF2Items_SetAttribute(item1, 2, 83, 1.0); // cloak consume rate decreased
 		TF2Items_SetAttribute(item1, 3, 726, 0.1); // cloak consume on feign death activate
 		TF2Items_SetAttribute(item1, 4, 810, 0.0); // mod cloak no regen from items
@@ -1535,7 +1546,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] class, int index, Hand
 	if (
 		ItemIsEnabled("targe", client) &&
 		StrEqual(class, "tf_wearable_demoshield") &&
-		(index == 131)
+		(index == 131 || index == 1144)
 	) {
 		item1 = TF2Items_CreateItem(0);
 		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
