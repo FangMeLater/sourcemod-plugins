@@ -14,10 +14,10 @@
 
 #define PLUGIN_NAME "TF2 Weapon Reverts"
 #define PLUGIN_DESC "Reverts nerfed weapons back to their glory days"
-#define PLUGIN_AUTHOR "Bakugo"
+#define PLUGIN_AUTHOR "FangMeLater"
 #define PLUGIN_VERSION "1.3.1"
 #define PLUGIN_URL "https://steamcommunity.com/profiles/76561198020610103"
-#define PLUGIN_UPDATER_URL "https://raw.githubusercontent.com/bakugo/sourcemod-plugins/master/plugins/tf2-reverts/updater.txt"
+#define PLUGIN_UPDATER_URL "https://raw.githubusercontent.com/FangMeLater/sourcemod-plugins/master/plugins/tf2-reverts/updater.txt"
 
 public Plugin myinfo = {
 	name = PLUGIN_NAME,
@@ -656,7 +656,6 @@ public void OnGameFrame() {
 							}
 						} else {
 							if (
-								TF2_IsPlayerInCondition(idx, TFCond_Cloaked) == false &&
 								TF2_IsPlayerInCondition(idx, TFCond_DeadRingered) == false
 							) {
 								players[idx].spy_is_feigning = false;
@@ -664,7 +663,9 @@ public void OnGameFrame() {
 								if (ItemIsEnabled("ringer", idx)) {
 									// when uncloaking, cloak is drained to 40%
 									
-									if (GetEntPropFloat(idx, Prop_Send, "m_flCloakMeter") > 40.0) {
+									if (GetEntPropFloat(idx, Prop_Send, "m_flCloakMeter") > 40.0
+										&& !TF2_IsPlayerInCondition(idx, TFCond_Cloaked))
+									{
 										SetEntPropFloat(idx, Prop_Send, "m_flCloakMeter", 40.0);
 									}
 								}
@@ -1183,7 +1184,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition) {
 					// this function is not called when a condition is gained that we already had before
 					
 					TF2_RemoveCondition(client, TFCond_AfterburnImmune);
-					TF2_AddCondition(client, TFCond_AfterburnImmune, 0.5, 0);
+					TF2_AddCondition(client, TFCond_AfterburnImmune, 0.02, 0);
 				}
 			}
 		}
@@ -1459,7 +1460,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] class, int index, Hand
 		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
 		TF2Items_SetNumAttributes(item1, 5);
 		TF2Items_SetAttribute(item1, 0, 35, 1.8); // mult cloak meter regen rate
-		TF2Items_SetAttribute(item1, 1, 82, 1.6); // cloak consume rate increased
+		TF2Items_SetAttribute(item1, 1, 82, 2.5); // cloak consume rate increased
 		TF2Items_SetAttribute(item1, 2, 83, 1.0); // cloak consume rate decreased
 		TF2Items_SetAttribute(item1, 3, 726, 0.1); // cloak consume on feign death activate
 		TF2Items_SetAttribute(item1, 4, 810, 0.0); // mod cloak no regen from items
@@ -1473,8 +1474,6 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] class, int index, Hand
 		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
 		TF2Items_SetNumAttributes(item1, 3);
 		TF2Items_SetAttribute(item1, 0, 241, 1.0); // reload time increased hidden
-		TF2Items_SetAttribute(item1, 1, 534, 1.4); // airblast vulnerability multiplier hidden
-		TF2Items_SetAttribute(item1, 2, 535, 1.4); // damage force increase hidden
 	}
 	
 	if (
@@ -1762,10 +1761,10 @@ Action SDKHookCB_OnTakeDamage(
 						GetEntProp(weapon1, Prop_Send, "m_iItemDefinitionIndex") == 59
 					) {
 						if (ItemIsEnabled("ringer", victim)) {
-							SetConVarFloat(cvar_ref_tf_feign_death_duration, 4.0);
-							SetConVarFloat(cvar_ref_tf_feign_death_speed_duration, 4.0);
+							SetConVarFloat(cvar_ref_tf_feign_death_duration, 6.5);
+							SetConVarFloat(cvar_ref_tf_feign_death_speed_duration, 6.5);
 							SetConVarFloat(cvar_ref_tf_feign_death_activate_damage_scale, 0.10);
-							SetConVarFloat(cvar_ref_tf_feign_death_damage_scale, 0.20);
+							SetConVarFloat(cvar_ref_tf_feign_death_damage_scale, 0.10);
 						} else {
 							SetConVarReset(cvar_ref_tf_feign_death_duration);
 							SetConVarReset(cvar_ref_tf_feign_death_speed_duration);
