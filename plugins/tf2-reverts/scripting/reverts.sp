@@ -1772,8 +1772,8 @@ Action SDKHookCB_OnTakeDamage(
 						GetEntProp(weapon1, Prop_Send, "m_iItemDefinitionIndex") == 59
 					) {
 						if (ItemIsEnabled("ringer", victim)) {
-							SetConVarFloat(cvar_ref_tf_feign_death_duration, 6.5);
-							SetConVarFloat(cvar_ref_tf_feign_death_speed_duration, 6.5);
+							SetConVarFloat(cvar_ref_tf_feign_death_duration, 6.0);
+							SetConVarFloat(cvar_ref_tf_feign_death_speed_duration, 6.0);
 							SetConVarFloat(cvar_ref_tf_feign_death_activate_damage_scale, 0.10);
 							SetConVarFloat(cvar_ref_tf_feign_death_damage_scale, 0.10);
 						} else {
