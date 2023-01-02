@@ -1562,7 +1562,9 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] class, int index, Hand
 	) {
 		item1 = TF2Items_CreateItem(0);
 		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
-		TF2Items_SetNumAttributes(item1, 1);
+		TF2Items_SetNumAttributes(item1, 3);
+		TF2Items_SetAttribute(item1, 0, 62, 0.75); // dmg taken from fire reduced
+		TF2Items_SetAttribute(item1, 0, 64, 0.75); // dmg taken from blast reduced
 		TF2Items_SetAttribute(item1, 0, 676, 0.0); // lose demo charge on damage when charging
 	}
 	
