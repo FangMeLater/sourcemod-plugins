@@ -173,6 +173,7 @@ public void OnPluginStart() {
 	ItemDefine("Sydney Sleeper", "sleeper", "Reverted to pre-2018, restored jarate explosion, no headshots", ITEM_FL_PICKABLE);
 	ItemDefine("Tide Turner", "turner", "Can deal full crits like other shields again");
 	ItemDefine("Ullapool Caber", "caber", "Reverted to pre-gunmettle, always deals 175+ damage on melee explosion");
+	ItemDefine("Warrior's Spirit", "bearhand", "Reverted back to its original stat");
 	ItemDefine("Vita-Saw", "vitasaw", "Reverted to pre-inferno, always preserves up to 20% uber on death", ITEM_FL_PICKABLE);
 	ItemDefine("Your Eternal Reward", "eternal", "Reverted to pre-inferno, cannot disguise, no cloak drain penalty", ITEM_FL_PICKABLE);
 	
@@ -1564,8 +1565,22 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] class, int index, Hand
 		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
 		TF2Items_SetNumAttributes(item1, 3);
 		TF2Items_SetAttribute(item1, 0, 62, 0.75); // dmg taken from fire reduced
-		TF2Items_SetAttribute(item1, 0, 64, 0.75); // dmg taken from blast reduced
-		TF2Items_SetAttribute(item1, 0, 676, 0.0); // lose demo charge on damage when charging
+		TF2Items_SetAttribute(item1, 1, 64, 0.75); // dmg taken from blast reduced
+		TF2Items_SetAttribute(item1, 2, 676, 0.0); // lose demo charge on damage when charging
+	}
+	
+	if (
+		ItemIsEnabled("bearhand", client) &&
+		StrEqual(class, "tf_weapon_fists") &&
+		(index == 310)
+	) {
+		item1 = TF2Items_CreateItem(0);
+		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
+		TF2Items_SetNumAttributes(item1, 4);
+		TF2Items_SetAttribute(item1, 0, 125, -20.0); // max health additive penalty
+		TF2Items_SetAttribute(item1, 1, 128, 0.0); // provide on active
+		TF2Items_SetAttribute(item1, 2, 180 , 0.0); // heal on kill
+		TF2Items_SetAttribute(item1, 3, 412, 1.0); // dmg taken increased
 	}
 	
 	if (
