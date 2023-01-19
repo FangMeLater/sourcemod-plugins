@@ -138,15 +138,19 @@ public void OnPluginStart() {
 	ItemDefine("Airblast", "airblast", "All flamethrowers' airblast mechanics are reverted to pre-inferno", ITEM_FL_PICKABLE);
 	ItemDefine("Air Strike", "airstrike", "Reverted to pre-toughbreak, no extra blast radius penalty when blast jumping");
 	ItemDefine("Ambassador", "ambassador", "Reverted to pre-inferno, deals full headshot damage (102) at all ranges");
+	ItemDefine("Amputator", "amputator", "Reverted to pre-2013, no damage penalty and no extra health regen", ITEM_FL_PICKABLE);
 	ItemDefine("Atomizer", "atomizer", "Reverted to pre-inferno, can always triple jump, taking 10 damage each time", ITEM_FL_PICKABLE);
 	ItemDefine("Axtinguisher", "axtinguish", "Reverted to pre-love&war, always deals 195 damage crits to burning targets", ITEM_FL_PICKABLE);
 	ItemDefine("B.A.S.E. Jumper", "basejump", "Reverted to pre-toughbreak, can redeploy, more air control, fire updraft");
 	ItemDefine("Baby Face's Blaster", "babyface", "Reverted to pre-gunmettle, no boost loss on damage, only -25% on jump");
-	ItemDefine("Beggar's Bazooka", "beggars", "Reverted to pre-2013, no radius penalty, misfires don't remove ammo");
+	ItemDefine("Beggar's Bazooka", "beggars", "Reverted to pre-toughbreak, no radius penalty");
+	ItemDefine("Bazooka's Misfire", "misfire", "Reverted to pre-2013, misfires don't remove ammo", ITEM_FL_PICKABLE);
 	ItemDefine("Bonk! Atomic Punch", "bonk", "Reverted to pre-inferno, no longer slows after the effect wears off");
 	ItemDefine("Booties & Bootlegger", "booties", "Reverted to pre-matchmaking, shield not required for speed bonus");
 	ItemDefine("Chargin' Targe", "targe", "Reverted to pre-toughbreak, 40% blast resistance, afterburn immunity");
-	ItemDefine("Dead Ringer", "ringer", "Reverted to pre-gunmettle, can pick up ammo, 80% dmg resist for 4s", ITEM_FL_PICKABLE);
+	ItemDefine("Claidheamh Mòr", "claid", "Reverted to pre-toughbreak, replace 15% damage vulnerability on active with -15 max hp", ITEM_FL_PICKABLE);
+	ItemDefine("Darwin's Danger Shield", "darwin", "Reverted to pre-2013, +25 hp, nothing more, nothing less", ITEM_FL_PICKABLE);
+	ItemDefine("Dead Ringer", "ringer", "Reverted to pre-gunmettle, can pick up ammo, 90% dmg resist for 6s", ITEM_FL_PICKABLE);
 	ItemDefine("Degreaser", "degreaser", "Reverted to pre-toughbreak, full switch speed for all weapons, old penalties");
 	ItemDefine("Dragon's Fury", "dragonfury", "Reverted -25% projectile size nerf");
 	ItemDefine("Enforcer", "enforcer", "Reverted to pre-gunmettle, damage bonus while undisguised, no piercing", ITEM_FL_PICKABLE);
@@ -161,6 +165,7 @@ public void OnPluginStart() {
 	ItemDefine("Loose Cannon", "cannon", "Reverted to pre-toughbreak, +50% projectile speed, constant 60 dmg impacts", ITEM_FL_PICKABLE);
 	ItemDefine("Market Gardener", "gardener", "Reverted to pre-toughbreak, no attack speed penalty");
 	ItemDefine("Pomson 6000", "pomson", "Increased hitbox size (same as Bison), passes through team, full drains");
+	ItemDefine("Powerjack", "powerjack", "Revert to pre-2013, +75 HP on kill with the downside of +20% dmg from melee source", ITEM_FL_PICKABLE);
 	ItemDefine("Reserve Shooter", "reserve", "Deals minicrits to airblasted targets again");
 	ItemDefine("Righteous Bison", "bison", "Increased hitbox size, can hit the same player more times");
 	ItemDefine("Sandman", "sandman", "Reverted to pre-inferno, stuns players on hit again");
@@ -173,8 +178,8 @@ public void OnPluginStart() {
 	ItemDefine("Sydney Sleeper", "sleeper", "Reverted to pre-2018, restored jarate explosion, no headshots", ITEM_FL_PICKABLE);
 	ItemDefine("Tide Turner", "turner", "Can deal full crits like other shields again");
 	ItemDefine("Ullapool Caber", "caber", "Reverted to pre-gunmettle, always deals 175+ damage on melee explosion");
-	ItemDefine("Warrior's Spirit", "bearhand", "Reverted back to its original stat");
 	ItemDefine("Vita-Saw", "vitasaw", "Reverted to pre-inferno, always preserves up to 20% uber on death", ITEM_FL_PICKABLE);
+	ItemDefine("Warrior's Spirit", "bearhand", "Reverted back to its original stat");
 	ItemDefine("Your Eternal Reward", "eternal", "Reverted to pre-inferno, cannot disguise, no cloak drain penalty", ITEM_FL_PICKABLE);
 	
 	menu_main = CreateMenu(MenuHandler_Main, (MenuAction_Select));
@@ -552,7 +557,7 @@ public void OnGameFrame() {
 								ammo = GetEntProp(idx, Prop_Send, "m_iAmmo", 4, 1);
 								
 								if (
-									ItemIsEnabled("beggars", idx) &&
+									ItemIsEnabled("misfire", idx) &&
 									players[idx].beggars_ammo == 3 &&
 									clip == (players[idx].beggars_ammo - 1) &&
 									rocket_create_entity == -1 &&
@@ -1223,6 +1228,20 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] class, int index, Hand
 	}
 	
 	if (
+		ItemIsEnabled("amputator", client) &&
+		StrEqual(class, "tf_weapon_bonesaw") &&
+		(index == 304)
+	) {
+		item1 = TF2Items_CreateItem(0);
+		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
+		TF2Items_SetNumAttributes(item1, 3);
+		TF2Items_SetAttribute(item1, 0, 1, 1.0); // damage penalty
+		TF2Items_SetAttribute(item1, 1, 57, 0.0); // health regen
+		TF2Items_SetAttribute(item1, 2, 128, 0.0); // provide on active
+		
+	}
+	
+	if (
 		ItemIsEnabled("atomizer", client) &&
 		StrEqual(class, "tf_weapon_bat") &&
 		(index == 450)
@@ -1306,6 +1325,32 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] class, int index, Hand
 		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
 		TF2Items_SetNumAttributes(item1, 1);
 		TF2Items_SetAttribute(item1, 0, 103, 1.50); // projectile speed increased
+	}
+	
+	if (
+		ItemIsEnabled("claid", client) &&
+		StrEqual(class, "tf_weapon_sword") &&
+		(index == 327)
+	) {
+		item1 = TF2Items_CreateItem(0);
+		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
+		TF2Items_SetNumAttributes(item1, 3);
+		TF2Items_SetAttribute(item1, 0, 125, -15.0); // max health additive penalty
+		TF2Items_SetAttribute(item1, 1, 128, 0.0); // provide on active
+		TF2Items_SetAttribute(item1, 2, 412, 1.0); // dmg taken increased
+	}
+	
+	if (
+		ItemIsEnabled("darwin", client) &&
+		StrEqual(class, "tf_wearable") &&
+		(index == 231)
+	) {
+		item1 = TF2Items_CreateItem(0);
+		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
+		TF2Items_SetNumAttributes(item1, 3);
+		TF2Items_SetAttribute(item1, 0, 26, 25.0); // max health additive bonus
+		TF2Items_SetAttribute(item1, 1, 60, 1.0); // dmg taken from fire reduced
+		TF2Items_SetAttribute(item1, 2, 527, 0.0); // afterburn immunity
 	}
 	
 	if (
@@ -1400,6 +1445,21 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] class, int index, Hand
 		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
 		TF2Items_SetNumAttributes(item1, 1);
 		TF2Items_SetAttribute(item1, 0, 5, 1.0); // fire rate penalty
+	}
+	
+	if (
+		ItemIsEnabled("powerjack", client) &&
+		StrEqual(class, "tf_weapon_fireaxe") &&
+		(index == 214)
+	) {
+		item1 = TF2Items_CreateItem(0);
+		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
+		TF2Items_SetNumAttributes(item1, 5);
+		TF2Items_SetAttribute(item1, 0, 107, 1.0); // move speed bonus
+		TF2Items_SetAttribute(item1, 1, 128, 0.0); // provide on active
+		TF2Items_SetAttribute(item1, 2, 180, 75.0); // heal on kill
+		TF2Items_SetAttribute(item1, 3, 206, 1.2); // dmg from melee increased 
+		TF2Items_SetAttribute(item1, 4, 412, 1.0); // dmg taken increased
 	}
 	
 	if (
@@ -1570,6 +1630,18 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] class, int index, Hand
 	}
 	
 	if (
+		ItemIsEnabled("vitasaw", client) &&
+		StrEqual(class, "tf_weapon_bonesaw") &&
+		(index == 173)
+	) {
+		item1 = TF2Items_CreateItem(0);
+		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
+		TF2Items_SetNumAttributes(item1, 2);
+		TF2Items_SetAttribute(item1, 0, 188, 20.0); // preserve ubercharge (doesn't work)
+		TF2Items_SetAttribute(item1, 1, 811, 0.0); // ubercharge preserved on spawn max
+	}
+	
+	if (
 		ItemIsEnabled("bearhand", client) &&
 		StrEqual(class, "tf_weapon_fists") &&
 		(index == 310)
@@ -1581,18 +1653,6 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] class, int index, Hand
 		TF2Items_SetAttribute(item1, 1, 128, 0.0); // provide on active
 		TF2Items_SetAttribute(item1, 2, 180 , 0.0); // heal on kill
 		TF2Items_SetAttribute(item1, 3, 412, 1.0); // dmg taken increased
-	}
-	
-	if (
-		ItemIsEnabled("vitasaw", client) &&
-		StrEqual(class, "tf_weapon_bonesaw") &&
-		(index == 173)
-	) {
-		item1 = TF2Items_CreateItem(0);
-		TF2Items_SetFlags(item1, (OVERRIDE_ATTRIBUTES|PRESERVE_ATTRIBUTES));
-		TF2Items_SetNumAttributes(item1, 2);
-		TF2Items_SetAttribute(item1, 0, 188, 20.0); // preserve ubercharge (doesn't work)
-		TF2Items_SetAttribute(item1, 1, 811, 0.0); // ubercharge preserved on spawn max
 	}
 	
 	if (
